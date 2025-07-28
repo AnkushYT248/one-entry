@@ -1,4 +1,4 @@
-# Project Title
+# One Entry.
 
 This project is designed for regular journal entries. It is not intended as a user-facing application but as a project to improve skills and gain experience.
 
