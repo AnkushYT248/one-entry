@@ -31,7 +31,6 @@ const navLinks = [
     {title: "Drafts", href: "/dashboard/drafts", icon: <BookDashed size={17}/>},
     {title: "Starred", href: "/dashboard/starred", icon: <Star size={17}/>},
     {title: "Archive", href: "/dashboard/archive", icon: <Box size={17}/>},
-    {title: "Recent", href: "/dashboard/recent", icon: <Clock size={17}/>},
     {title: "Trash", href: "/dashboard/trash", icon: <Trash size={17}/>},
 ];
 
@@ -133,7 +132,7 @@ const Sidebar = ({
                         return (
                             <LinkItems key={index} title={link.title} href={link.href}
                                        className={`${link.href === pathname && "bg-accent-foreground text-accent"} rounded-lg`}
-                                       icon={link.icon}/>
+                                       icon={link.icon} onClick={toggleSidebar}/>
                         )
                     })
                 }
@@ -149,7 +148,7 @@ const Sidebar = ({
                                 return (
                                     <LinkItems key={index} title={link.title} href={link.href}
                                                className={`${link.href === pathname && "bg-accent-foreground text-accent"} rounded-lg`}
-                                               icon={link.icon}/>
+                                               icon={link.icon} onClick={toggleSidebar}/>
                                 )
                             })
                         }
@@ -164,7 +163,7 @@ const Sidebar = ({
                                 return (
                                     <LinkItems key={index} title={link.title} href={link.href}
                                                className={`${link.href === pathname && "bg-accent-foreground text-accent"} rounded-lg`}
-                                               icon={link.icon}/>
+                                               icon={link.icon} onClick={toggleSidebar}/>
                                 )
                             })
                         }

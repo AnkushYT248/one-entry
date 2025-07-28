@@ -7,8 +7,10 @@ import {
     Frown,
     Meh,
     Smile,
-    MessageCircleMore, X,
+    MessageCircleMore, X, Check,
 } from 'lucide-react';
+import {useAuth} from "@/context/AuthContext";
+import {Alert} from "@/components/Alert";
 
 const moods = [
     {
@@ -78,11 +80,62 @@ const MoodTracker = () => {
     const [selectedMood, setSelectedMood] = useState(null);
     const [selectedSecondary, setSelectedSecondary] = useState(null);
     const [moodComment, setMoodComment] = useState("");
+    const [globalError, setGlobalError] = useState(null)
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(null);
+    const { user } = useAuth();
 
     const handlePrimaryMoodSelect = (mood) => {
         setSelectedMood(mood);
         setSelectedSecondary(null);
     };
+
+    const handleSecondaryMoodSelect = (mood) => {
+        setSelectedSecondary(mood);
+    }
+
+    const handleMoodSubmit = async  () => {
+        setGlobalError(null);
+        setIsSubmitting(null);
+        if(!selectedMood && !selectedSecondary ){
+            return setGlobalError("Please select a mood first");
+        }
+        if(selectedMood && selectedSecondary && moodComment.length > 300){
+            return setGlobalError("Comment length should be less than 300 characters");
+        }
+
+        setIsSubmitting(true);
+        try {
+            await fetch('/api/user/mood', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    mood: selectedMood.name,
+                    secondary_mood: selectedSecondary,
+                    mood_comment: moodComment,
+                    userId: user._id,
+                })
+            }).then((res)=> {
+                if(!res.ok) {
+                    setGlobalError("Something went wrong");
+                }else {
+                    setGlobalError(null);
+                    setSelectedMood(null);
+                    setSelectedSecondary(null);
+                    setMoodComment("");
+                    setIsSuccess("Mood set successfully");
+                }
+            });
+        }catch (e) {
+            setGlobalError("Something went wrong");
+            console.error(e);
+            setIsSuccess(null);
+        }finally {
+            setIsSubmitting(false);
+        }
+    }
 
     return (
         <div className="flex flex-col items-center justify-center w-full px-4 py-8">
@@ -102,6 +155,13 @@ const MoodTracker = () => {
                     </button>
                 ))}
             </div>
+            {globalError && (
+                <Alert variant={"destructive"} className={"text-nowrap my-3"}><X /> {globalError}</Alert>
+            )}
+
+            {isSuccess && (
+                <Alert variant={"success"} className={"text-nowrap my-3 flex items-center gap-2"}><Check /> {isSuccess}</Alert>
+            )}
 
             {selectedMood && (
                 <div
@@ -152,7 +212,7 @@ const MoodTracker = () => {
                     )}
 
                     {selectedMood && selectedSecondary && (
-                        <button
+                        <button onClick={handleMoodSubmit}
                             className={"p-4 mx-auto w-full bg-emerald-700 text-white rounded-lg mt-2 cursor-pointer hover:bg-green-800 transition-colors duration-300"}>Set
                             Today's Mood</button>
                     )}

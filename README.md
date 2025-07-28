@@ -1,7 +1,6 @@
 # Project Title
 
-This project is made for your regular journal entry. its not a user app i am making it a project which improve skills
-and etc.
+This project is designed for regular journal entries. It is not intended as a user-facing application but as a project to improve skills and gain experience.
 
 ## Installation
 <hr />

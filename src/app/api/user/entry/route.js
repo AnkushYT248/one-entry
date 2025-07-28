@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { CONNECT_DATABASE } from "@/lib/connection/MongoDB";
+import {CONNECT_DATABASE, DISCONNECT_DATABASE} from "@/lib/connection/MongoDB";
 import User from "@/lib/models/mongoose/UserModel";
 
 export const POST = async (req) => {
@@ -48,5 +48,7 @@ export const POST = async (req) => {
             { error: "Unknown Error" },
             { status: 500 }
         );
+    }finally {
+        await DISCONNECT_DATABASE();
     }
 };

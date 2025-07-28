@@ -65,7 +65,7 @@ const Journey = () => {
     const [calendarOpen, setCalendarOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [feedback, setFeedback] = useState({ success: null, error: null });
-    const { user } = useAuth();
+    const { user, refetchData } = useAuth();
     const date = new Date();
 
     const resetFields = () => {
@@ -128,6 +128,7 @@ const Journey = () => {
             if (!response.ok) throw new Error(data.error || "Submission failed");
             setFeedback({ success: "Entry saved successfully", error: null });
             resetFields();
+            refetchData();
         } catch (error) {
             setFeedback({ error: error.message, success: null });
         } finally {

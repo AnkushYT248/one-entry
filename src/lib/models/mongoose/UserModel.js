@@ -21,6 +21,23 @@ const EntrySchema = new mongoose.Schema({
     timestamps: true,
 });
 
+const MoodSchema = new mongoose.Schema({
+    mood: {
+        type: String,
+        default: 'neutral',
+    },
+    secondary_mood: {
+        type: String,
+        default: 'neutral',
+    },
+    mood_comment: {
+        type: String,
+        maxlength: 300,
+    },
+}, {
+    timestamps: true,
+});
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -60,6 +77,10 @@ const userSchema = new mongoose.Schema({
     entries_data: {
       type: [EntrySchema],
       default: [],
+    },
+    moods_data: {
+        type: [MoodSchema],
+        default: [],
     },
     isVerified: {
         type: Boolean,
