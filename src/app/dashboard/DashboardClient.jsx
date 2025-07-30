@@ -4,8 +4,10 @@ import MoodTracker from "@/components/ui/MoodTracker";
 import Journey from "@/components/dashboard_component/Journey";
 import {GreetHelper} from "@/components/helper/GreetHelper";
 import Dashboard_Header from "@/components/dashboard_component/Dashboard_Header";
+import { useRouter } from "next/navigation";
 
 const DashboardClient = () => {
+    const router = useRouter();
     const now = new Date();
     const dateOptions = {
         weekday: 'long',

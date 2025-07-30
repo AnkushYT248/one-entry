@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 const DashboardLayout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { user, isLoading } = useAuth();
-    const router = useRouter();
 
     const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 

@@ -2,7 +2,8 @@ import { Sora, Orbitron } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import ThemeModifier from "@/components/ui/ThemeModifier";
-import {AuthProvider} from "@/context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
+import NotReady from "@/components/maintenance/production_unready/NotReady";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -16,12 +17,15 @@ const orbitron = Orbitron({
   subsets: ["latin"],
 });
 
+// ✅ export this unconditionally
 export const metadata = {
   title: "One Entry",
   description: "Track your daily progress with ease and visualize your journey using modern, intuitive tools.",
 };
 
 export default function RootLayout({ children }) {
+  const isDev = process.env.NODE_ENV === 'production';
+
   return (
     <html lang="en">
       <head>
@@ -47,10 +51,10 @@ export default function RootLayout({ children }) {
         <body
           className={`${sora.variable} ${orbitron.variable} antialiased overflow-x-hidden relative dark transition-all duration-300 w-screen h-screen`}
         >
-        <AuthProvider>
-        <ThemeModifier />
-          {children}
-        </AuthProvider>
+          <AuthProvider>
+            <ThemeModifier />
+            {isDev ? <NotReady /> : children}
+          </AuthProvider>
         </body>
       </ThemeProvider>
     </html>
