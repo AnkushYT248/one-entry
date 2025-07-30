@@ -46,18 +46,17 @@ const Mockup = () => {
                     lg:w-[600px] lg:h-[400px]
                     rotate-[0deg]
                     md:-rotate-12
-                    dark:bg-zinc-900/60
-                    bg-white/60
-                    backdrop-blur-lg
-                    border dark:border-zinc-700
-                    border-[whitesmoke]
+                    bg-glass
                     shadow-2xl rounded-xl
                     overflow-hidden
-                    scale-[0.95] hover:scale-100 transition-all duration-500
+                    scale-[0.98]
                     overflow-y-auto
+                    border-2 border-gradient-main
+                    will-change-transform
                 "
+                style={{ perspective: '1200px', transform: 'rotateY(16deg) scale(1.03)', boxShadow: '0 20px 60px 0 rgba(0,0,0,0.25)' }}
             >
-                <div className="mockup-login-example absolute inset-0 p-4  text-sm space-y-3">
+                <div className="mockup-login-example absolute inset-0 p-4 text-sm space-y-3" style={{ transformStyle: 'preserve-3d' }}>
                    <div className={"flex items-center justify-between gap-4 flex-wrap w-full"}>
                        <div className={"flex-1 flex items-center justify-start gap-4"}>
                            <span className={`w-8 h-8 bg-gray-200 dark:bg-emerald-600 rounded-full flex items-center justify-center p-2 hover:scale-105 cursor-pointer transition-all duration-500 ${isLoginOpen && "dark:bg-violet-600 bg-violet-400 text-white"}`} onClick={()=> setIsLoginOpen(true)}><LogIn /></span>

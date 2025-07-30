@@ -3,20 +3,15 @@
 import IndexHero from "@/components/index/hero/Hero";
 import {useAuth} from "@/context/AuthContext";
 import {CosmicLoading} from "@/components/Loading";
-import Link from "next/link";
-import {useEffect} from "react";
 
 const Container = () => {
-    const {  isLoading, user } = useAuth();
-    useEffect(() => {
-        console.log(user)
-    }, [user]);
+    const {  isLoading } = useAuth();
     return (
-        <main>
+        <main className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-hero transition-colors duration-500">
             {isLoading && <CosmicLoading
                 size="large"
-                ringColor="border-green-600"
-                coreColor="bg-white"
+                ringColor="border-gradient-main"
+                coreColor="bg-gradient-accent"
                 speed="spin-fast"
                 position="fixed"
                 float="top-right"

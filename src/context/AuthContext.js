@@ -62,7 +62,6 @@ export function AuthProvider({ children }) {
             isAuthenticated,
             isLoading,
             error,
-            // manual refresh: bypass alreadyFetched
             refetchData: () => {
                 alreadyFetched.current = false;
                 fetchUser();

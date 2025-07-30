@@ -3,12 +3,12 @@
 import Image from "next/image";
 import {Alert, AlertTitle} from "@/components/Alert";
 import {AtSign, CheckCircle2Icon, Eye, EyeOff, Key, UserRound, XCircle} from "lucide-react";
-import Link from "next/link";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import {HashLoader} from "react-spinners";
 import {useAuth} from "@/context/AuthContext";
 import {signIn} from "next-auth/react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/Tooltip";
+import { validateEmail, validatePassword, validateUsername, debounce } from "@/lib/utils";
 
 const Register = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -22,25 +22,26 @@ const Register = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(null);
     const [isCreationSuccess, setIsCreationSuccess] = useState(false);
+    const [passwordStrength, setPasswordStrength] = useState(0);
     const { isLoading, isAuthenticated, user, refetchData } = useAuth();
 
 
     const validateErrors = () => {
         const errors = {};
         if (!formData.username.trim()) {
-            errors.username = "Username is required";
-        } else if (formData.username.length < 3) {
-            errors.username = "Username must be at least 3 characters long";
+            errors.username = "Please enter a username.";
+        } else if (!validateUsername(formData.username)) {
+            errors.username = "Username must be at least 3 characters, only letters, numbers, and underscores.";
         }
         if (!formData.email.trim()) {
-            errors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            errors.email = "Invalid email format";
+            errors.email = "Please enter your email address.";
+        } else if (!validateEmail(formData.email)) {
+            errors.email = "That doesn't look like a valid email.";
         }
         if (!formData.password.trim()) {
-            errors.password = "Password is required";
-        } else if (formData.password.length < 6) {
-            errors.password = "Password must be at least 6 characters long";
+            errors.password = "Please enter a password.";
+        } else if (!validatePassword(formData.password)) {
+            errors.password = "Password must be at least 8 characters, include a letter, a number, and a special character.";
         }
         setFieldsError(errors);
         return errors;
@@ -81,6 +82,9 @@ const Register = () => {
                 setIsSubmitting(false);
             });
     }
+
+    // Wrap handleSubmit with debounce
+    const debouncedHandleSubmit = debounce(handleSubmit, 350);
 
     const handleGoogleAuth = async () => {
         if(user?.authProvider?.includes('google')) {
@@ -123,6 +127,17 @@ const Register = () => {
              setIsSubmitting(false);
         }
     }
+
+    // Password strength calculation
+    const getPasswordStrength = (password) => {
+        let score = 0;
+        if (password.length >= 8) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/\d/.test(password)) score++;
+        if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) score++;
+        return score;
+    };
 
     return (
         <div className={"space-y-4"}>
@@ -172,7 +187,7 @@ const Register = () => {
                 </Alert>
             )}
 
-            <form className={"space-y-4"} onSubmit={handleSubmit}>
+            <form className={"space-y-4"} onSubmit={debouncedHandleSubmit}>
                 <div className={"flex flex-col gap-1"}>
                     <div className={`flex items-center justify-between gap-2 border-2 bg-[whitesmoke] p-2 rounded-2xl ${isCreationSuccess || isLoading || isAuthenticated && "opacity-85 cursor-not-allowed"}`}>
                         <UserRound className={"w-6 h-6 text-black opacity-80"}/>
@@ -218,7 +233,10 @@ const Register = () => {
                             placeholder={"••••••••"}
                             disabled={isCreationSuccess || isLoading || isAuthenticated}
                             className={`flex-1 w-full p-2 text-black border-none outline-none focus:bg-none ${isCreationSuccess || isLoading || isAuthenticated && "opacity-85 cursor-not-allowed"}`}
-                            onChange={(e) => setFormData({...formData, password: e.target.value})}
+                            onChange={(e) => {
+                                setFormData({...formData, password: e.target.value});
+                                setPasswordStrength(getPasswordStrength(e.target.value));
+                            }}
                             value={formData.password}
                         />
                         <div onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
@@ -233,6 +251,22 @@ const Register = () => {
                         <p className="text-red-500 text-sm">{fieldsError.password}</p>
                     )}
                 </div>
+
+                {/* Password strength meter */}
+                {formData.password && (
+                    <div className="w-full mt-1">
+                        <div className="h-2 rounded bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                            <div
+                                className={`h-2 rounded transition-all duration-300 ${
+                                    passwordStrength <= 2 ? 'bg-red-500 w-1/3' : passwordStrength === 3 ? 'bg-yellow-500 w-2/3' : 'bg-green-500 w-full'
+                                }`}
+                            />
+                        </div>
+                        <p className={`text-xs mt-1 ${passwordStrength <= 2 ? 'text-red-500' : passwordStrength === 3 ? 'text-yellow-500' : 'text-green-500'}`}>
+                            {passwordStrength <= 2 ? 'Weak password' : passwordStrength === 3 ? 'Medium strength' : 'Strong password!'}
+                        </p>
+                    </div>
+                )}
 
                 <button type={"submit"} disabled={isSubmitting || isCreationSuccess || isLoading || isAuthenticated}
                         className={"w-full h-auto px-4 py-3 rounded-2xl shadow-2xl bg-green-300 dark:bg-white text-black cursor-pointer hover:bg-gray-200 transition-all duration-500"}>

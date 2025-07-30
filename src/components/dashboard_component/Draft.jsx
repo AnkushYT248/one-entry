@@ -55,9 +55,9 @@ const Draft = ({ list = true, filter = "A-Z" }) => {
 
   if (!filteredDrafts || filteredDrafts.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center my-auto">
         <div className="text-center text-muted-foreground">
-          <LifeBuoy size={50} className="mx-auto mb-4" />
+          <LifeBuoy size={50} className="mx-auto mb-3 text-emerald-600" />
           <h2 className="text-2xl font-semibold">No Drafts Found</h2>
           <p className="text-sm">Start creating and they’ll show up here.</p>
         </div>
@@ -102,7 +102,7 @@ const Draft = ({ list = true, filter = "A-Z" }) => {
                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                    <AlertDialogDescription>
                      This action cannot be undone. This will permanently delete your
-                     account and remove your data from our servers.
+                     draft from our servers.
                    </AlertDialogDescription>
                  </AlertDialogHeader>
                  <AlertDialogFooter>

@@ -70,32 +70,27 @@ const IndexHero = () => {
     }, []);
 
     return (
-        <div className="flex items-center flex-col 2xl:flex-row 2xl:items-start gap-4 mt-10 p-4">
-            <div className="flex-1 flex items-center 2xl:items-start flex-col justify-center text-center xl:text-left">
+        <div className="flex items-center flex-col 2xl:flex-row 2xl:items-start gap-4 mt-10 p-4 w-full relative">
+            {/* Animated/gradient background overlay */}
+            <div className="absolute inset-0 z-0 opacity-60 pointer-events-none animate-pulse" aria-hidden="true" />
+            <div className="flex-1 flex items-center 2xl:items-start flex-col justify-center text-center xl:text-left z-10">
                 <div className={"relative w-full"}>
-                    <h1 className="text-[2.75rem] text-wrap sm:text-[3.5rem] font-bold -tracking-[0.05rem] heroText text-center 2xl:text-left"
+                    <h1 className="text-[2.75rem] text-wrap sm:text-[3.5rem] font-bold -tracking-[0.05rem] heroText text-center 2xl:text-left drop-shadow-lg"
                         ref={heroTextRef}>
                         Modern, quick, and intuitive.
                     </h1>
-
-                    <Zap className={"absolute -top-2 left-[9.5%] w-1/2"} ref={lightningRef}/>
+                    <Zap className={"absolute -top-2 left-[9.5%] w-1/2 text-yellow-400 drop-shadow-xl"} ref={lightningRef}/>
                 </div>
-
                 <p className="text-xl sm:text-2xl mt-3 hero-line-1">
                     Here you can
-                    <span
-                        className="bg-gradient-to-l from-blue-600 to-emerald-700 bg-clip-text text-transparent font-semibold"> Track</span>,
-                    <span
-                        className="bg-gradient-to-l from-green-600 to-yellow-500 bg-clip-text text-transparent font-semibold"> Create</span>,
+                    <span className="bg-gradient-to-l from-blue-600 to-emerald-700 bg-clip-text text-transparent font-semibold"> Track</span>,
+                    <span className="bg-gradient-to-l from-green-600 to-yellow-500 bg-clip-text text-transparent font-semibold"> Create</span>,
                     and
-                    <span
-                        className="bg-gradient-to-l from-orange-600 to-violet-700 bg-clip-text text-transparent font-semibold"> Delete</span>
+                    <span className="bg-gradient-to-l from-orange-600 to-violet-700 bg-clip-text text-transparent font-semibold"> Delete</span>
                 </p>
-
                 <p className="text-lg sm:text-xl mt-1 hero-line-2">
                     your Daily Progress, Special Events, and get updates via email or SMS.
                 </p>
-
                 <div className={"space-y-4 mt-4"}>
                     <div className={"flex items-center gap-5 flex-wrap justify-center"}>
                         <AnimatedButton
@@ -104,16 +99,14 @@ const IndexHero = () => {
                             bgColor={theme === "dark" ? "#ffffff" : "#5a5ab7"}
                             gradientFrom="#f2709c"
                             gradientTo="#ff9472"
-                            className="shadow-lg dark:text-black text-white flex items-center gap-4"
+                            className="shadow-lg dark:text-black text-white flex items-center gap-4 hover:scale-105 transition-transform duration-300"
                         >
                             <MoveRight/> Explore Now
                         </AnimatedButton>
-
-                        <Button variant={"primary"} size={"lg"} href={isAuthenticated ? "/dashboard" : "#auth_form"} className={"shadow-lg rounded-4xl"}
+                        <Button variant={"primary"} size={"lg"} href={isAuthenticated ? "/dashboard" : "#auth_form"} className={"shadow-lg rounded-4xl hover:scale-105 transition-transform duration-300"}
                                 icon={isAuthenticated ? <LayoutDashboard /> : <UserPlus />} iconPosition={"left"}>{isAuthenticated ? "Go to dashboard" : "Sign Up"}</Button>
                     </div>
                 </div>
-
                 <div className={"space-y-4 w-full lg:w-[80%] 2xl:w-[70%] mt-5 2xl:mt-4"}>
                     <h2 className={"text-lg font-medium leading-snug -tracking-normal"}>Perfect for individuals who
                         strive to work efficiently and effectively, our focus journal is designed to elevate your
@@ -123,8 +116,7 @@ const IndexHero = () => {
                     </h2>
                 </div>
             </div>
-
-            <div className="h-max relative mt-10 w-screen lg:w-auto" id={"auth_form"}>
+            <div className="h-max relative mt-10 w-screen lg:w-auto z-10" id={"auth_form"}>
                 <Mockup/>
             </div>
         </div>

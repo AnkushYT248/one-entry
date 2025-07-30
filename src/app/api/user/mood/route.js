@@ -1,12 +1,13 @@
+import { CONNECT_DATABASE, DISCONNECT_DATABASE } from "@/lib/connection/MongoDB";
 import { NextResponse } from "next/server";
-import {CONNECT_DATABASE, DISCONNECT_DATABASE} from "@/lib/connection/MongoDB";
 import User from "@/lib/models/mongoose/UserModel";
 import mongoose from "mongoose";
 import { getUserIdFromRequest } from "@/lib/utils";
 
 export const POST = async (req) => {
     try {
-        const { title, description, date } = await req.json();
+        // Parse request JSON
+        const { mood, secondary_mood, mood_comment } = await req.json();
         // Extract user ID from JWT in cookies
         let userId;
         try {
@@ -14,48 +15,62 @@ export const POST = async (req) => {
         } catch (err) {
             return NextResponse.json({ error: "Unauthorized: Invalid or missing token." }, { status: 401 });
         }
-        // Basic validation
-        if (!title || !description || !date) {
+        // Input validation
+        if (!mood || typeof mood !== "string") {
             return NextResponse.json(
-                { error: "Missing required fields" },
+                { error: "The 'mood' field is required and must be a string." },
                 { status: 400 }
             );
         }
-        // Connect to DB
+        if (!secondary_mood || typeof secondary_mood !== "string") {
+            return NextResponse.json(
+                { error: "The 'secondary_mood' field is required and must be a string." },
+                { status: 400 }
+            );
+        }
+        if (!mood_comment || typeof mood_comment !== "string") {
+            return NextResponse.json(
+                { error: "The 'mood_comment' field is required and must be a string." },
+                { status: 400 }
+            );
+        }
+        // Connect to the database
         await CONNECT_DATABASE();
+        // Fetch the user by ID
         const user = await User.findById(userId);
         if (!user) {
             return NextResponse.json(
-                { error: `No user found with this ID: ${userId}` },
+                { error: `No user found with the provided ID: ${userId}` },
                 { status: 404 }
             );
         }
-        // Prepare entry with ObjectId
-        const entry = {
-            title,
-            description,
-            entry_date: date,
+        // Mood data preparation
+        const moodData = {
+            mood,
+            secondary_mood,
+            mood_comment,
         };
-        user.entries_data.push(entry);
+        // Add the new mood entry and save the user
+        user.moods_data.push(moodData);
         await user.save();
+        // Successful response
         return NextResponse.json(
-            {
-                message: "Entry Saved Successfully",
-                entry,
-            },
-            { status: 200 }
+            { message: "Mood data added successfully!" },
+            { status: 201 }
         );
-    } catch (e) {
-        console.error("POST error:", e);
+    } catch (err) {
+        // Log the error for debugging purposes
+        console.error("An error occurred while processing the request:", err);
+        // Generic server error response
         return NextResponse.json(
-            { error: "Unknown Error" },
+            { error: "An internal server error occurred. Please try again later." },
             { status: 500 }
         );
-    }finally {
+    } finally {
+        // Ensure database disconnection
         await DISCONNECT_DATABASE();
     }
 };
-
 
 export const DELETE = async (req) => {
     try {
@@ -93,14 +108,14 @@ export const DELETE = async (req) => {
             }
             return new mongoose.Types.ObjectId(id);
         });
-        user.entries_data = user.entries_data.filter(
+        user.moods_data = user.moods_data.filter(
             (entry) => !objectIds.some((id) => id.equals(entry._id))
         );
         // Save the updated user
         await user.save();
         return NextResponse.json(
             {
-                message: "Entries deleted successfully.",
+                message: "Mood Entries deleted successfully.",
                 deleted_ids: idsArray,
             },
             { status: 200 }

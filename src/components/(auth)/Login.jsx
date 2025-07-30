@@ -9,6 +9,7 @@ import {useAuth} from "@/context/AuthContext";
 import {HashLoader} from "react-spinners";
 import {signIn} from "next-auth/react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/Tooltip";
+import { validateEmail, validatePassword, debounce } from "@/lib/utils";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -26,17 +27,15 @@ const Login = () => {
 
     const validateErrors = () => {
         const errors = {};
-        const emailRegex = /^[a-z0-9._-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,63}$/;
         if (!formData.email.trim()) {
-            errors.email = "Email is required";
-        } else if (!emailRegex.test(formData.email)) {
-            errors.email = "Invalid email format";
+            errors.email = "Please enter your email address.";
+        } else if (!validateEmail(formData.email)) {
+            errors.email = "That doesn't look like a valid email.";
         }
-
         if (!formData.password.trim()) {
-            errors.password = "Password is required";
-        } else if (formData.password.length < 6) {
-            errors.password = "Password must be at least 6 characters long";
+            errors.password = "Please enter your password.";
+        } else if (!validatePassword(formData.password)) {
+            errors.password = "Password must be at least 8 characters, include a letter, a number, and a special character.";
         }
         setFieldsError(errors);
         return errors;
@@ -80,6 +79,9 @@ const Login = () => {
             setIsSubmitting(false);
         }
     };
+
+    // Wrap handleSubmit with debounce
+    const debouncedHandleSubmit = debounce(handleSubmit, 350);
 
     const handleGoogleAuth = async () => {
         if(user?.authProvider?.includes('google')) {
@@ -171,7 +173,7 @@ const Login = () => {
                 </Alert>
             )}
 
-            <form className={"space-y-4"} onSubmit={handleSubmit}>
+            <form className={"space-y-4"} onSubmit={debouncedHandleSubmit}>
                 <div className={"flex flex-col gap-1"}>
                     <div className={`flex items-center justify-between gap-2 border-2 bg-[whitesmoke] p-2 rounded-2xl ${fieldsError.email && "border-red-600 outline-red-600"}  ${isCreationSuccess || isLoading || isAuthenticated && "opacity-85 cursor-not-allowed"}`}>
                         <AtSign className={"w-6 h-6 text-black opacity-80"}/>

@@ -7,14 +7,16 @@ export default function Home() {
   return (
       <>
          <Reveler />
-      <main className="relative overflow-hidden min-h-screen ">
-        <AnimatedGrid />
-        <div className="relative z-10 p-10 h-[100px] md:h-[150px] overflow-hidden">
+      <main className="relative overflow-hidden min-h-screen " aria-label="Main content">
+        <header className="relative z-10 p-10 h-[100px] md:h-[150px] overflow-hidden" aria-label="Site header">
             <div className={"text-center h-full"}>
                 <TextAnimated text={"ONE ENTRY"} className={"font-bold"} />
             </div>
-        </div>
+        </header>
+        <section aria-label="Home content">
+            <AnimatedGrid />
             <Container />
+        </section>
       </main>
       </>
   );

@@ -8,11 +8,10 @@ const Button = ({
   disabled = false, // Disabled state for the button
   icon, // Icon JSX before the text, optional
   iconPosition = "left", // Position of the icon ['left', 'right']
-  children, // Button inner content
-  className, // Additional custom classes
-  ...props // Other props for customization
+  children,
+  className,
+  ...props
 }) => {
-  // Predefined styles for variants
   const variants = {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
     destructive: "bg-red-500 text-white hover:bg-red-600",
@@ -21,12 +20,12 @@ const Button = ({
     info: "bg-blue-600 text-white hover:bg-blue-500",
     success: "bg-green-500 text-white hover:bg-green-600",
     warning: "bg-yellow-400 text-yellow-900 hover:bg-yellow-500",
+    outline: "border border-gray-300 text-gray-900 hover:bg-gray-100 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700"
   };
 
-  // Predefined styles for different sizes
   const sizes = {
-    base: "px-4 py-2 text-lg",
-    large: "px-6 py-3 text-xl",
+    base: "px-4 py-2 text-sm",
+    large: "px-6 py-3 text-base",
     small: "px-3 py-1 text-xs",
   };
 

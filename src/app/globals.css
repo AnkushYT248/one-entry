@@ -118,6 +118,14 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --glass-bg: rgba(24,24,27,0.7);
+  --glass-border: rgba(255,255,255,0.08);
+}
+
+.bg-glass {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(16px);
+  border: 1.5px solid var(--glass-border);
 }
 
 @layer base {
